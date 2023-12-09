@@ -3,7 +3,7 @@ import 'package:bookbyte_buyer/view/registerpage.dart';
 import 'package:flutter/material.dart';
 import 'package:bookbyte_buyer/shared/myserverconfig.dart';
 import 'dart:convert';
-//import '../model/user.dart';
+import '../model/user.dart';
 import 'package:http/http.dart' as http;
 
 class Mainpage extends StatefulWidget {
@@ -156,23 +156,15 @@ class _LoginPageState extends State<Mainpage> {
     http.post(
         Uri.parse("${MyServerConfig.server}/bookbyte_buyer/php/login_user.php"),
         body: {"email": email, "password": pass}).then((response) {
-      // print(response.body);
+      print(response.body);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['status'] == "success") {
-  //        User user = User.fromJson(data['data']);
- //         print(user.username);
-   //       print(user.useremail);
-     //     print(user.userid);
-          Navigator.push(
-            context,
-               MaterialPageRoute(
-                  builder: (context) {
-                 return const HomePage();
-                },
+        User user = User.fromJson(data['data']);
+          Navigator.push(context,
+               MaterialPageRoute(builder: (context) => HomePage(userdata:user)
               ),
           );
-
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Login Failed"),
