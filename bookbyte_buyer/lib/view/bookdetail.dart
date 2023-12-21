@@ -36,7 +36,8 @@ class _BookDetailsState extends State<BookDetails> {
               style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
             ),
           ),
-          Expanded(child: Column(children: [
+          Expanded(
+            child: Column(children: [
           Text( "Author: ${widget.book.bookAuthor.toString()}"),
           Text("ISBN: ${widget.book.bookIsbn.toString()}"),
           Text("Description: ${widget.book.bookDesc.toString()}"),
