@@ -129,6 +129,7 @@ class _LoginPageState extends State<Mainpage> {
                       ),
                     ],
                   ),
+                   TextButton(onPressed: (){_loginGuest();}, child: const Text("Skip"))
                 ],
               ),
             ],
@@ -156,7 +157,7 @@ class _LoginPageState extends State<Mainpage> {
     http.post(
         Uri.parse("${MyServerConfig.server}/bookbyte_buyer/php/login_user.php"),
         body: {"email": email, "password": pass}).then((response) {
-      print(response.body);
+      //print(response.body);
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['status'] == "success") {
@@ -174,4 +175,28 @@ class _LoginPageState extends State<Mainpage> {
       }
     });
   }
+  void _loginGuest() {
+        http.post(
+        Uri.parse("${MyServerConfig.server}/bookbyte_buyer/php/login_user.php"),
+        body: {"email": 'guest@gmail.com', "password": '12345678'}).then((response) {
+      //print(response.body);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['status'] == "success") {
+        User user = User.fromJson(data['data']);
+          Navigator.push(context,
+               MaterialPageRoute(builder: (context) => HomePage(userdata:user)
+              ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Login Failed"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }
+    });
+  }
+
+  
 }
