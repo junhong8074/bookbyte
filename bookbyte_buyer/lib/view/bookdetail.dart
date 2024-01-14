@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'package:http/http.dart' as http;
 import 'package:bookbyte_buyer/view/mainpage.dart';
 import 'package:flutter/material.dart';
 import '../model/book.dart';
@@ -23,7 +26,7 @@ class _BookDetailsState extends State<BookDetails> {
       appBar: AppBar(title: const Text("Book Details"),),
       body: Center(
         child: Column(children: [
-          Container(
+          SizedBox(
             height: screenHeight * 0.5,
             child: Image.network(
               fit: BoxFit.fitHeight,
@@ -51,9 +54,71 @@ class _BookDetailsState extends State<BookDetails> {
           child: ElevatedButton(onPressed: (){Navigator.push(context,MaterialPageRoute(builder: (content) => const Mainpage()));},
           child: const Text("Please Login to Buy")),
           )
-          : ElevatedButton(onPressed: (){}, child: const Text("Add to Cart"))
+          : widget.book.bookQty == "0"
+             ? ElevatedButton(onPressed: (){
+              showDialog(context: context,
+                builder: (BuildContext context) {
+                 return AlertDialog(
+                  title: const Text('No Stock'),
+                  content: const Text('Sorry, this item is currently out of stock.'),
+                  actions: <Widget>[
+                    TextButton(onPressed: () {Navigator.of(context).pop();},child: const Text('OK')),
+                  ],
+                );
+              },);
+             }, child: const Text("Add to Cart"),)
+             : ElevatedButton(onPressed: (){addcart();}, child: const Text("Add to Cart"))
         ],),
       )
     );
+  }
+
+void addcart() {
+showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text("Are you Sure?"),
+      content: const Text("Do you want to proceed with this action?"),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false), // Close dialog and return false
+          child: const Text("No"),
+        ),
+        TextButton(
+          onPressed: () {addtoCart();
+                Navigator.of(context).pop();
+              },
+              child: const Text('Yes'),
+        ),
+      ],
+    ),
+  );
+}
+
+void addtoCart() {
+    http.post(
+        Uri.parse("${MyServerConfig.server}/bookbyte_buyer/php/insert_cart.php"),
+        body: {
+          "buyer_id": widget.user.userid.toString(),
+          "seller_id": widget.book.sellerId.toString(),
+          "book_id": widget.book.bookId.toString(),
+        }).then((response) {
+      log(response.body);
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['status'] == "success") {
+          print(response);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Success"),
+            backgroundColor: Colors.green,
+          ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Failed"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }
+    });
   }
 }

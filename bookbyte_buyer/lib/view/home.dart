@@ -6,6 +6,7 @@ import '../model/user.dart';
 import 'package:http/http.dart' as http;
 import '../model/book.dart';
 import '../shared/myserverconfig.dart';
+import 'package:bookbyte_buyer/view/cartpage.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -28,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   int numofpage = 1;
   int curpage = 1;
   int numofresult = 0;
+  // ignore: prefer_typing_uninitialized_variables
   var color;
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,12 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {ShowSearchDialog();}
+          ),
+          IconButton(
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (content) => CartPage(
+              user: widget.userdata,
+              )));}
           )
         ]
       ),
@@ -170,6 +178,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
   
+  // ignore: non_constant_identifier_names
   void ShowSearchDialog() {
        TextEditingController searchctlr = TextEditingController();
     title = searchctlr.text;
