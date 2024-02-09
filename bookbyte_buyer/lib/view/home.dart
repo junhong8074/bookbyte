@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:bookbyte_buyer/view/bookdetail.dart';
+import 'package:bookbyte_buyer/view/profilepage.dart';
 import 'package:flutter/material.dart';
 import '../model/user.dart';
 import 'package:http/http.dart' as http;
@@ -51,10 +52,41 @@ class _HomePageState extends State<HomePage> {
           )
         ]
       ),
+              drawer: Drawer(
+        child: Drawer(
+  child: ListView(
+    padding: EdgeInsets.zero,
+    children: [
+      const DrawerHeader(
+        decoration: BoxDecoration(
+          color: Colors.blue,
+        ),
+        child: Text("Welcome!"),
+      ),
+      ListTile(
+        title: const Text('My Profile'),
+        onTap: () {
+          Navigator.push(
+            context,
+              MaterialPageRoute(
+                builder: (content) => ProfilePage(
+                  userdata: widget.userdata,
+                 )));
+        },
+      ),
+      ListTile(
+        title: const Text('Log Out', style: TextStyle(color: Colors.red,)),
+        onTap: () {
+          int count = 2;
+          Navigator.of(context).popUntil((_) => count-- <= 0);
+        },
+      ),
+    ],
+  ),
+)),
       body: Center(
         child: Column(
           children: [
-            Text("Hello, ${widget.userdata.username}"),
           bookList.isEmpty
           ? const Center(child: Text("No Data"))
           : Expanded(
@@ -142,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            )
+            ),
         );
   }
 

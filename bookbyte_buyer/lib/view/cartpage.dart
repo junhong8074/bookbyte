@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:bookbyte_buyer/model/cart.dart';
 import 'package:bookbyte_buyer/model/user.dart';
 import 'package:flutter/material.dart';
+import 'package:bookbyte_buyer/view/billscreen.dart';
 import 'package:http/http.dart' as http;
 
 import '../shared/myserverconfig.dart';
@@ -74,7 +75,16 @@ class _CartPageState extends State<CartPage> {
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       ElevatedButton(
-                          onPressed: (){}, child: const Text("Pay Now"))
+                          onPressed: () async { await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (content) => BillScreen(
+                                          user: widget.user,
+                                          totalprice: total,
+                                        )));
+                            loadUserCart();
+                          },
+                          child: const Text("Pay Now"))
                     ],
                   ))
             ]),
